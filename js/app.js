@@ -71,47 +71,78 @@ function getLocation() {
 	let lat;
 	let lon;
 	const key = "0a61b17a293600e08e672f60a1893abf";
+	let test;
+	let URL_API = `https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&lang=en&appid=${key}`;
 
-	if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition((p) => {
-			lat = p.coords.latitude;
-			lon = p.coords.longitude;
+	const locationAvailable = navigator.geolocation.getCurrentPosition((p) => {
+		lat = p.coords.latitude;
+		lon = p.coords.longitude;
 
-			//const URL_API = `https://api.openweathermap.org/data/2.5/weather?q=Bogota,co&units=metric&lang=en&appid=${key}`;
-			const URL_API = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=en&units=metric&appid=${key}`;
+		URL_API = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&lang=en&units=metric&appid=${key}`;
 
-			fetch(URL_API)
-				.then((response) => response.json())
-				.then((data) => {
-					// Temperature
-					const temp = Math.round(data.main.temp);
-					let desc = data.weather[0].description;
+		fetch(URL_API)
+			.then((response) => response.json())
+			.then((data) => {
+				// Temperature
+				const temp = Math.round(data.main.temp);
+				let desc = data.weather[0].description;
 
-					desc = desc.charAt(0).toUpperCase() + desc.slice(1);
+				desc = desc.charAt(0).toUpperCase() + desc.slice(1);
 
-					temperature.textContent = `${temp} °C ${desc}`;
+				temperature.textContent = `${temp} °C ${desc}`;
 
-					// Icon - Temperature
-					let iconTemp = data.weather[0].icon;
-					iconTemp = `http://openweathermap.org/img/wn/${iconTemp}@2x.png`;
-					iconWeather.src = iconTemp;
+				// Icon - Temperature
+				let iconTemp = data.weather[0].icon;
+				iconTemp = `http://openweathermap.org/img/wn/${iconTemp}@2x.png`;
+				iconWeather.src = iconTemp;
 
-					// City
-					city.textContent = `${data.name},`;
+				// City
+				city.textContent = `${data.name},`;
 
-					// Flag
-					let flagImg = data.sys.country.toLowerCase();
-					flagImg = `https://flagcdn.com/20x15/${flagImg}.png`;
+				// Flag
+				let flagImg = data.sys.country.toLowerCase();
+				flagImg = `https://flagcdn.com/20x15/${flagImg}.png`;
 
-					flag.src = flagImg;
+				flag.src = flagImg;
 
-					// Wind
-					wind.textContent = `Wind speed ${data.wind.speed}m/s`;
-				})
-				.catch((e) => {
-					console.log(e);
-				});
+				// Wind
+				wind.textContent = `Wind speed ${data.wind.speed}m/s`;
+			})
+			.catch((e) => {
+				console.log(e);
+			});
+	});
+
+	// If user does not enable location
+	fetch(URL_API)
+		.then((response) => response.json())
+		.then((data) => {
+			// Temperature
+			const temp = Math.round(data.main.temp);
+			let desc = data.weather[0].description;
+
+			desc = desc.charAt(0).toUpperCase() + desc.slice(1);
+
+			temperature.textContent = `${temp} °C ${desc}`;
+
+			// Icon - Temperature
+			let iconTemp = data.weather[0].icon;
+			iconTemp = `http://openweathermap.org/img/wn/${iconTemp}@2x.png`;
+			iconWeather.src = iconTemp;
+
+			// City
+			city.textContent = `${data.name},`;
+
+			// Flag
+			let flagImg = data.sys.country.toLowerCase();
+			flagImg = `https://flagcdn.com/20x15/${flagImg}.png`;
+
+			flag.src = flagImg;
+
+			// Wind
+			wind.textContent = `Wind speed ${data.wind.speed}m/s`;
+		})
+		.catch((e) => {
+			console.log(e);
 		});
-	} else {
-	}
 }
